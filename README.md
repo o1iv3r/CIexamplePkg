@@ -225,8 +225,8 @@ Turn on travis for your repo at https://travis-ci.org/profile/o1iv3r as usethis 
 
 Add your github PAT to the Travis environment variables via options -> settings -> Environment variables
 
-*NAME: GITHUB_PAT
-*VALUE: <token>
+* NAME: GITHUB_PAT
+* VALUE: token
     
 Travis will now run each time we push to github. Try this out! Note that this might take some time. After a successfull build you might notice the nice badge on your github page.
 
@@ -237,10 +237,13 @@ Building wrt different R versions:
 
 Add
 
+```{r eval=FALSE}
 r:
   - oldrel
   - release
   - devel
+```  
+  
 
 to your .travis.yml
 
@@ -285,8 +288,8 @@ to your travis.yml
 
 Then got to [](https://codecov.io/) and add your repo. You will get a token that you have to add ad an Travis env variable (similar to your github PAT)
 
-*NAME: CODECOV_TOKEN
-*VALUE: <token>
+* NAME: CODECOV_TOKEN
+* VALUE: token
 
 Now commit and push your changes to github and enjoy your new coverage badge.
 

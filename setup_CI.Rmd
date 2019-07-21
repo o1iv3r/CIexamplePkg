@@ -5,7 +5,7 @@ output:
     df_print: paged
 ---
 
-This package pprovdes a quick guide on how to develop an R package from scratch and use Travis CI. A very nice general introduction can be found here:
+This package provdes a quick guide on how to develop an R package from scratch and use Travis CI. A very nice general introduction can be found here:
 
 [rOpenSci Packages: Development, Maintenance, and Peer Review](https://devguide.ropensci.org/)
 

@@ -3,3 +3,4 @@
 ^LICENSE\.md$
 ^setup_CI\.Rmd'$
 ^setup_CI\.nb\.html$
+^\.travis\.yml$

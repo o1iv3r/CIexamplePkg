@@ -194,33 +194,73 @@ We'll make use of the travis package here
 remotes::install_github("ropenscilabs/travis")
 ```
 
-## git(hub)
+## github
 
-```{r}
+Allow git to comit all files and restart RStudio.
+
+```{r eval=FALSE}
 usethis::use_git()
 usethis::use_git_config(user.name = "Oliver Pfaffel", user.email = "opfaffel@gmail.com")
 ```
 
-Now add a github PAT to 
-
-
-
-alternatively use travis package
-Create a repository on GitHub (if it's not there yet)
-travis::github_create_repo()
-
-Show the GitHub repository name
-travis::github_repo()
-
-
-We'll make use of the travis package here
+Now create a github PAT (personal access token) from the github page and add it to the environment
 
 ```{r eval=FALSE}
-devtools::install_github("ropenscilabs/tic.package")
+usethis::edit_r_environ()
 ```
 
+Add the line GITHUB_PAT=YOUR-PAT, restart R and run
 
-```{r}
-tic.package::
+```{r eval=FALSE}
+Sys.getenv("GITHUB_PAT")
 ```
+
+to see if it works. Next we create a github repo (use the name of your repo). Use github for this. Then commit and push all files (copy and paste from github or use RStudio GUI)
+
+## Travis CI
+
+Make a travis account and log in. Add Travis to your package via
+
+```{r eval=FALSE}
+usethis::use_travis()
+```
+
+Turn on travis for your repo at https://travis-ci.org/profile/o1iv3r as usethis says.
+
+Add your github PAT to the Travis environment variables via options -> settings -> Environment variables
+
+   *NAME: GITHUB_PAT
+   *VALUE: <token>
+    
+Travis will now run each time we push to github. Try this out!
+
+
+## Advanced Travis options
+
+The benefits of travis: Building wrt different R versions
+
+Add
+
+r:
+  - oldrel
+  - release
+  - devel
+
+to your .travis.yml
+
+    This means we can test against three versions of R with no effort
+
+# blocklist
+branches:
+  except:
+  - legacy
+  - experimental
+
+# safelist
+branches:
+  only:
+  - master
+  - stable
+
+
 

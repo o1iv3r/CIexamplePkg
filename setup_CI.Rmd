@@ -1,9 +1,13 @@
 ---
-title: "How to set up a package for continuous integration"
+title: "How to set up an R package with continuous integration"
 output:
   html_document:
     df_print: paged
 ---
+
+This package pprovdes a quick guide on how to develop an R package from scratch and use Travis CI. A very nice general introduction can be found here:
+
+[rOpenSci Packages: Development, Maintenance, and Peer Review](https://devguide.ropensci.org/)
 
 # R package basics
 
@@ -232,12 +236,12 @@ Add your github PAT to the Travis environment variables via options -> settings 
    *NAME: GITHUB_PAT
    *VALUE: <token>
     
-Travis will now run each time we push to github. Try this out!
+Travis will now run each time we push to github. Try this out! Note that this might take some time. After a successfull build you might notice the nice badge on your github page.
 
 
 ## Advanced Travis options
 
-The benefits of travis: Building wrt different R versions
+Building wrt different R versions:
 
 Add
 
@@ -248,7 +252,17 @@ r:
 
 to your .travis.yml
 
-    This means we can test against three versions of R with no effort
+This means we can test against three versions of R with no effort
+
+Build only for certain branches...
+
+# safelist
+branches:
+  only:
+  - master
+  - stable
+  
+or for all branches except...
 
 # blocklist
 branches:
@@ -256,11 +270,36 @@ branches:
   - legacy
   - experimental
 
-# safelist
-branches:
-  only:
-  - master
-  - stable
+## Test coverage
+
+We want Travis not only to run the tests but also to report test coverage. We'll do this via the covr package
+
+```{r eval=FALSE}
+use_coverage()
+```
+
+Make sure to copy 
+
+r_github_packages:
+  - r-lib/covr
+
+after_success:
+  - Rscript -e 'covr::codecov()'
+
+to your travis.yml
 
 
+Then got to [](https://codecov.io/) and add your repo. You will get a token that you have to add ad an Travis env variable (similar to your github PAT)
+
+   *NAME: CODECOV_TOKEN
+   *VALUE: <token>
+
+Now commit and push your changes to github and enjoy your new coverage badge.
+
+By the way, the covr package has a nice Addin that graphically shows you test coverage:
+
+```{r eval=FALSE}
+library(covr)
+# Addins -> Calculate text package coverage
+```
 

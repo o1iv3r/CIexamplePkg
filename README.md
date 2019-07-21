@@ -112,6 +112,12 @@ You can also add a vignette, but we'll not do this here.
 use_vignette("name_of_vignette")
 ```
 
+Also very nice is the option to add a spell-checker (again omited for this package)
+
+```{r eval=FALSE}
+use_spell_check() # requires spelling package
+```
+
 Every R function should have a documentation. We'll change the code of our function to
 
 ```{r eval=FALSE}
@@ -164,7 +170,7 @@ Now we should check the package (there also is a button for this in RStudio)
 devtools::check(document = FALSE)
 ```
 
-To remove the note about non-standard files on top level, we simply ignore those file when building R
+To remove the note about non-standard files on top level, we simply ignore those files when building R
 
 ```{r eval=FALSE}
 use_build_ignore("name of file to ignore.filetype")

@@ -1,0 +1,5 @@
+^.*\.Rproj$
+^\.Rproj\.user$
+^LICENSE\.md$
+^setup_CI\.Rmd'$
+^setup_CI\.nb\.html$

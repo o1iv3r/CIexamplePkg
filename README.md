@@ -90,3 +90,216 @@ We'll add a news and readme file.
 use_news_md()
 use_readme_md() # use_readme_rmd() IF you want to run R code in your readme
 ```
+
+We change the readme file as follows.
+
+```{r eval=FALSE}
+# CIexamplePkg
+
+<!-- badges: start -->
+<!-- badges: end -->
+
+The goal of CIexamplePkg is to provide a simple example on how to set up a package for continuous integration.
+```
+
+Be sure to keep the news file up to date. You can increment the version number via
+
+```{r eval=FALSE}
+use_version()
+```
+
+You can also add a vignette, but we'll not do this here.
+
+```{r eval=FALSE}
+use_vignette("name_of_vignette")
+```
+
+Every R function should have a documentation. We'll change the code of our function to
+
+```{r eval=FALSE}
+#' Sum up two variables
+#'
+#' What is the sum of a and b?
+#'
+#' @param a numeric
+#' @param b numeric
+#' @param plot Makes plot if TRUE
+#'
+#' @return Returns a numeric that is the sum of a and b.
+#'
+#' @examples
+#' add(7,2)
+#' add(4,16,plot=TRUE)
+#'
+#' @export
+add <- function(a,b,plot=FALSE) {
+  val <- a+b
+  if (plot==TRUE) {
+    df <- data.frame(x=c(a,b,val))
+    p <- ggplot2::ggplot(df) + ggplot2::geom_col(ggplot2::aes(x=x,y=x))
+    print(p)
+  }
+  return(val)
+}
+```
+
+
+The function will now be exported to the namespace of our package, if we delete the existing NAMESPACE file first.
+After "Install and Restart" we build the documentation via
+
+```{r eval=FALSE}
+devtools::document()
+```
+
+Now the documentation is available via
+
+```{r eval=FALSE}
+?add
+```
+
+
+## Checking the package
+
+Now we should check the package (there also is a button for this in RStudio)
+
+```{r eval=FALSE}
+devtools::check(document = FALSE)
+```
+
+To remove the note about non-standard files on top level, we simply ignore those file when building R
+
+```{r eval=FALSE}
+use_build_ignore()
+```
+
+## Tests
+
+Every R package should have tests that automatically check core functionality
+
+```{r eval=FALSE}
+use_test("add")
+```
+
+We'll simply change the code to
+
+```{r eval=FALSE}
+test_that("addition works", {
+  expect_equal(add(7,2), 9)
+})
+```
+
+and run the test. It should be successfull.
+
+# Continous integration
+
+We'll make use of the travis package here
+
+```{r eval=FALSE}
+remotes::install_github("ropenscilabs/travis")
+```
+
+## github
+
+Allow git to comit all files and restart RStudio.
+
+```{r eval=FALSE}
+usethis::use_git()
+usethis::use_git_config(user.name = "Oliver Pfaffel", user.email = "opfaffel@gmail.com")
+```
+
+Now create a github PAT (personal access token) from the github page and add it to the environment
+
+```{r eval=FALSE}
+usethis::edit_r_environ()
+```
+
+Add the line GITHUB_PAT=YOUR-PAT, restart R and run
+
+```{r eval=FALSE}
+Sys.getenv("GITHUB_PAT")
+```
+
+to see if it works. Next we create a github repo (use the name of your repo). Use github for this. Then commit and push all files (copy and paste from github or use RStudio GUI)
+
+## Travis CI
+
+Make a travis account and log in. Add Travis to your package via
+
+```{r eval=FALSE}
+usethis::use_travis()
+```
+
+Turn on travis for your repo at https://travis-ci.org/profile/o1iv3r as usethis says.
+
+Add your github PAT to the Travis environment variables via options -> settings -> Environment variables
+
+   *NAME: GITHUB_PAT
+   *VALUE: <token>
+    
+Travis will now run each time we push to github. Try this out! Note that this might take some time. After a successfull build you might notice the nice badge on your github page.
+
+
+## Advanced Travis options
+
+Building wrt different R versions:
+
+Add
+
+r:
+  - oldrel
+  - release
+  - devel
+
+to your .travis.yml
+
+This means we can test against three versions of R with no effort
+
+Build only for certain branches...
+
+# safelist
+branches:
+  only:
+  - master
+  - stable
+  
+or for all branches except...
+
+# blocklist
+branches:
+  except:
+  - legacy
+  - experimental
+
+## Test coverage
+
+We want Travis not only to run the tests but also to report test coverage. We'll do this via the covr package
+
+```{r eval=FALSE}
+use_coverage()
+```
+
+Make sure to copy 
+
+r_github_packages:
+  - r-lib/covr
+
+after_success:
+  - Rscript -e 'covr::codecov()'
+
+to your travis.yml
+
+
+Then got to [](https://codecov.io/) and add your repo. You will get a token that you have to add ad an Travis env variable (similar to your github PAT)
+
+   *NAME: CODECOV_TOKEN
+   *VALUE: <token>
+
+Now commit and push your changes to github and enjoy your new coverage badge.
+
+By the way, the covr package has a nice Addin that graphically shows you test coverage:
+
+```{r eval=FALSE}
+library(covr)
+# Addins -> Calculate text package coverage
+```
+
